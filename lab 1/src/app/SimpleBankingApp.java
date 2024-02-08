@@ -67,7 +67,7 @@ public class SimpleBankingApp {
 		System.out.println("There are: " + accounts.size() + " accounts in the system.");
 		//System.out.println("Account_number | username_of_account_holder | account_type | account_opening_date");
 
-		System.out.println(String.format("%-10s| %-30s| %-10s| %-15s| %-30s", 
+		System.out.println(String.format("%-10s| %-30s| %-10s| %-28s| %-15s", 
 				"Account #", "username_of_account_holder", "type", "opening_date", "Balance"));
 		System.out.println("--------------------------------------------------------------------------------");
 		
