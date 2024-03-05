@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.jfree.data.DataUtilities;
 import org.jfree.data.DefaultKeyedValues2D;
 import org.jfree.data.KeyedValues;
+import org.jfree.data.UnknownKeyException;
 import org.jfree.data.DefaultKeyedValues;
 import org.jfree.data.Values2D;
 import junit.framework.TestCase;
@@ -95,13 +96,55 @@ public class DataUtilitiesTest {
 	@Test
 	public void testGetCumulativePercentagesAllPositive() {
 		DefaultKeyedValues keyValues = new DefaultKeyedValues();
-		keyValues.addValue((Comparable) 0.0, 6.0);
-		keyValues.addValue((Comparable) 1.0,  11.0);
-		keyValues.addValue((Comparable) 2.0, 3.0);
+		keyValues.addValue((Comparable) 0.0, 2.0);
+		keyValues.addValue((Comparable) 1.0,  3.0);
+		keyValues.addValue((Comparable) 2.0, 5.0);
 		KeyedValues object_under_test = DataUtilities.getCumulativePercentages((KeyedValues)keyValues);
 		
-		assertEquals((double) object_under_test.getValue(2), 1.0, .000000001d);
+		assertEquals(1.0,(double) object_under_test.getValue(2), .000000001d);
 	}
+	
+	@Test
+	public void testGetCumulativePercentagesWithNull() {
+		try {
+			DefaultKeyedValues keyValues = new DefaultKeyedValues();
+			keyValues.addValue((Comparable) 0.0, null);
+			keyValues.addValue((Comparable) 1.0,  11.0);
+			keyValues.addValue((Comparable) 2.0, 3.0);
+			KeyedValues object_under_test = DataUtilities.getCumulativePercentages((KeyedValues)keyValues);
+			
+			assertEquals(1.0, (double) object_under_test.getValue(2), .000000001d);
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(UnknownKeyException.class));
+		}
+	}
+	
+	@Test
+	public void testGetCumulativePercentagesNullKeyValues() {
+		try {
+			KeyedValues object_under_test = DataUtilities.getCumulativePercentages((null));
+			
+			assertEquals(1.0, (double) object_under_test.getValue(2), .000000001d);
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(IllegalArgumentException.class));
+		}
+	}
+	
+	@Test
+	public void testGetCumulativePercentagesAllZeros() {
+		DefaultKeyedValues keyValues = new DefaultKeyedValues();
+		keyValues.addValue((Comparable) 0.0, 0.0);
+		keyValues.addValue((Comparable) 1.0,  0.0);
+		keyValues.addValue((Comparable) 2.0, 0.0);
+		KeyedValues object_under_test = DataUtilities.getCumulativePercentages((KeyedValues)keyValues);
+		
+		assertEquals("GetCumulativePercentage: Did not return Expected Result", 1.0, (double) object_under_test.getValue(0), .000000001d);
+	}
+
 
 	//calculateColumnTotal Tests
 	@Test
@@ -192,8 +235,7 @@ public class DataUtilitiesTest {
 			fail("No exception thrown. The expected outcome was: a thrown exception of type: IllegalArgumentException");
 		}
 		catch (Exception e) {
-			assertTrue("Incorrect exception type thrown",
-				e.getClass().equals(IllegalArgumentException.class));
+			assertTrue("Incorrect exception type thrown", e.getClass().equals(IllegalArgumentException.class));
 		}
 	}
 	
