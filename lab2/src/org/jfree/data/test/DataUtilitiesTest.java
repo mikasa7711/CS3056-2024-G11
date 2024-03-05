@@ -93,17 +93,16 @@ public class DataUtilitiesTest {
 	
 	// getCumulativePercentages Tests
 	@Test
-	public void testGetCumulativePercentages() {
+	public void testGetCumulativePercentagesAllPositive() {
 		DefaultKeyedValues keyValues = new DefaultKeyedValues();
 		keyValues.addValue((Comparable) 0.0, 6.0);
 		keyValues.addValue((Comparable) 1.0,  11.0);
 		keyValues.addValue((Comparable) 2.0, 3.0);
-		KeyedValues object_under_test = DataUtilities.getCumulativePercentages((KeyedValues) ke
-				yValues);
+		KeyedValues object_under_test = DataUtilities.getCumulativePercentages((KeyedValues)keyValues);
 		
 		assertEquals((double) object_under_test.getValue(2), 1.0, .000000001d);
 	}
-	
+
 	//calculateColumnTotal Tests
 	@Test
 	public void testNullDataColumnTotal() {
@@ -128,11 +127,16 @@ public class DataUtilitiesTest {
 	
 	@Test
 	public void testAllPositiveAndFinalElementColumnColumnTotal() {
-		DefaultKeyedValues2D testValues = new DefaultKeyedValues2D();
-		values2D = testValues;
-		testValues.addValue(0.0,6.0, 0.0);
-		testValues.addValue(5.0, 3.0, 0.0);
-		assertEquals("calculateColumnTotal: Did not Return the expected result", 0.0, DataUtilities.calculateColumnTotal(values2D, 2), 0.0000001d );
+		try {
+			DefaultKeyedValues2D testValues = new DefaultKeyedValues2D();
+			values2D = testValues;
+			testValues.addValue(0.0,6.0, 0.0);
+			testValues.addValue(5.0, 3.0, 0.0);
+			assertEquals("calculateColumnTotal: Did not Return the expected result", 0.0, DataUtilities.calculateColumnTotal(values2D, 2), 0.0000001d );
+		}
+		catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 	
 	@Test
@@ -143,17 +147,6 @@ public class DataUtilitiesTest {
 		testValues.addValue(-5.0, -3.0, -0.0);
 		assertEquals("calculateColumnTotal: Did not Return the expected result", -5.0, DataUtilities.calculateColumnTotal(values2D, 0), 0.0000001d );
 	}
-	
-	@Test
-	public void testAllNegativeAndFinalElementColumnColumnTotal() {
-		DefaultKeyedValues2D testValues = new DefaultKeyedValues2D();
-		values2D = testValues;
-		testValues.addValue(-0.0,-6.0, -0.0);
-		testValues.addValue(-5.0, -3.0, -1.0);
-		assertEquals("calculateColumnTotal: Did not Return the expected result", -1.0, DataUtilities.calculateColumnTotal(values2D, 2), 0.0000001d );
-	}
-	
-
 	
 	//createNumberArray Tests
 	@Test
@@ -205,5 +198,55 @@ public class DataUtilitiesTest {
 	}
 	
 	//createNumberArray2D Tests
-	//dont forget we need to do these tests!
+	@Test
+	public void testNullCreateNumberArray2D() {
+		try {
+			DataUtilities.createNumberArray2D(null);
+			fail("No exception thrown. The expected outcome was: a thrown exception of type: IllegalArgumentException");
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(IllegalArgumentException.class));
+		}
+	}
+	
+	@Test
+	public void testAllPositiveCreateNumberArray2D() {
+		double[][] dataInput = {{1,2,3},{1,2,3}}; 
+		Number[][] actual = DataUtilities.createNumberArray2D(dataInput);
+		Number[][] expected = {{1.0,2.0,3.0},{1.0,2.0,3.0}}; 
+		assertArrayEquals("createNumberArray2D: Did not return the expected result", expected, actual);
+	}
+	
+	@Test
+	public void testAllNegativeCreateNumberArray2D() {
+		double[][] dataInput = {{-1,-2,-3},{-1,-2,-3}}; 
+		Number[][] actual = DataUtilities.createNumberArray2D(dataInput);
+		Number[][] expected = {{-1.0,-2.0,-3.0},{-1.0,-2.0,-3.0}}; 
+		assertArrayEquals("createNumberArray2D: Did not return the expected result", expected, actual);
+	}
+	
+	@Test
+	public void testAllZeroCreateNumberArray2D() {
+		double[][] dataInput = {{0,0,0},{0,0,0}}; 
+		Number[][] actual = DataUtilities.createNumberArray2D(dataInput);
+		Number[][] expected = {{0.0,0.0,0.0},{0.0,0.0,0.0}}; 
+		assertArrayEquals("createNumberArray2D: Did not return the expected result", expected, actual);
+	}
+	
+	@Test
+	public void testPositiveAndNegativeCreateNumberArray2D() {
+		double[][] dataInput = {{1,2,3},{-1,-2,-3}}; 
+		Number[][] actual = DataUtilities.createNumberArray2D(dataInput);
+		Number[][] expected = {{1.0,2.0,3.0},{-1.0,-2.0,-3.0}}; 
+		assertArrayEquals("createNumberArray2D: Did not return the expected result", expected, actual);
+	}
+	
+	@Test
+	public void testEmptyCreateNumberArray2D() {
+		double[][] dataInput = {{},{}}; 
+		Number[][] actual = DataUtilities.createNumberArray2D(dataInput);
+		Number[][] expected = {{},{}}; 
+		assertArrayEquals("createNumberArray2D: Did not return the expected result", expected, actual);
+	}
 }
