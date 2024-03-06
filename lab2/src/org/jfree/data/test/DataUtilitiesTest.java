@@ -35,8 +35,7 @@ public class DataUtilitiesTest {
 
 	
 	// calculateRowTotal Tests
-	//Has an issue somewhere, all tests return 0
-	@Test //Has an invalid input so returns 0
+	@Test 
 	public void testValidDataAndRowTotal() {
 		assertEquals("Wrong sum returned. It should be 5.0", 5.0, DataUtilities.calculateRowTotal(values2D, 0), 0.0000001d );
 	}
@@ -166,6 +165,36 @@ public class DataUtilitiesTest {
 		testValues.addValue(0.0,6.0, 0.0);
 		testValues.addValue(5.0, 3.0, 0.0);
 		assertEquals("calculateColumnTotal: Did not Return the expected result", 5.0, DataUtilities.calculateColumnTotal(values2D, 0), 0.0000001d );
+	}
+	
+	@Test
+	public void testBVAColumnTotal() {
+		try {
+			DefaultKeyedValues2D testValues = new DefaultKeyedValues2D();
+			values2D = testValues;
+			testValues.addValue(0.0,6.0, 0.0);
+			testValues.addValue(5.0, 3.0, 0.0);
+			assertEquals("calculateColumnTotal: Did not Return the expected result", 9.0, DataUtilities.calculateColumnTotal(values2D, 1), 0.0000001d );
+		}		
+		catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testBVAPlusOneColumnTotal() {
+		try {
+			DefaultKeyedValues2D testValues = new DefaultKeyedValues2D();
+			values2D = testValues;
+			testValues.addValue(0.0,6.0, 0.0);
+			testValues.addValue(5.0, 3.0, 0.0);
+			DataUtilities.calculateColumnTotal(values2D, 0);
+			fail("No exception thrown. The expected outcome was: a thrown exception of type: IllegalArgumentException");
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(IndexOutOfBoundsException.class));
+		}
 	}
 	
 	@Test
