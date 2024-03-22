@@ -1,6 +1,9 @@
 package org.jfree.data;
 
 import static org.junit.Assert.*;
+
+import java.security.InvalidParameterException;
+
 import org.jfree.data.Range;
 import org.junit.*;
 
@@ -24,6 +27,147 @@ public class RangeTest {
 	public void tearDown() throws Exception {
 	}
 
+	//combine Tests
+	@Test
+	public void testCombine() {
+		Range r1 = new Range(2,3);
+		Range r2 = new Range(4,5);
+		Range expectedRange = new Range(2,5);
+		assertEquals("Combine: Did not return the expected output", expectedRange, Range.combine(r1, r2));
+	}
+	
+	@Test
+	public void testCombineR1Null() {
+		Range r1 = null;
+		Range r2 = new Range(4,5);
+		Range expectedRange = r2;
+		assertEquals("Combine: Did not return the expected output", expectedRange, Range.combine(r1, r2));
+	}
+	
+	@Test
+	public void testCombineR2Null() {
+		Range r1 = new Range(2,3);
+		Range r2 = null;
+		Range expectedRange = r1;
+		assertEquals("Combine: Did not return the expected output", expectedRange, Range.combine(r1, r2));
+	}
+	
+	
+	//constrain Tests
+	@Test
+	public void testConstrainUpper() {
+		Range r1 = new Range(2,3);
+		double value = 4;
+		double expectedValue = 3;
+		assertEquals("Constrain: Did not return the expected output", expectedValue, r1.constrain(value), 0.000000001d);
+	}
+	
+	@Test
+	public void testConstrainLower() {
+		Range r1 = new Range(2,3);
+		double value = 1;
+		double expectedValue = 2;
+		assertEquals("Constrain: Did not return the expected output", expectedValue, r1.constrain(value), 0.000000001d);
+	}
+	
+	@Test
+	public void testConstrainContains() {
+		Range r1 = new Range(2,4);
+		double value = 3;
+		double expectedValue = 3;
+		assertEquals("Constrain: Did not return the expected output", expectedValue, r1.constrain(value), 0.000000001d);
+	}
+	
+	
+	//contains Tests
+	@Test
+	public void testContains() {
+		Range r1 = new Range(2,4);
+		double value = 3;
+		boolean expectedValue = true;
+		assertEquals("Contains: Did not return the expected output", expectedValue, r1.constrain(value));
+	}
+	
+	@Test
+	public void testContainsFalse() {
+		Range r1 = new Range(2,4);
+		double value = 10;
+		boolean expectedValue = false;
+		assertEquals("Contains: Did not return the expected output", expectedValue, r1.constrain(value));
+	}
+	
+	
+	//equals Test
+	@Test
+	public void testEqualsTrue() {
+		Range r1 = new Range(2,3);
+		Range r2 = new Range(2,3);
+		boolean expectedValue = true;
+		assertEquals("Equals: Did not return the expected output", expectedValue, r1.equals(r2));
+	}
+	
+	@Test
+	public void testEqualsFalseDifferentLower() {
+		Range r1 = new Range(2,3);
+		Range r2 = new Range(1,3);
+		boolean expectedValue = false;
+		assertEquals("Equals: Did not return the expected output", expectedValue, r1.equals(r2));
+	}
+	
+	@Test
+	public void testEqualsFalseWrongObj() {
+		Range r1 = new Range(2,3);
+		double r2 = 6;
+		boolean expectedValue = false;
+		assertEquals("Equals: Did not return the expected output", expectedValue, r1.equals(r2));
+	}
+
+	
+	//expand Tests
+	@Test
+	public void testExpand() {
+		Range r1 = new Range(2,6);
+		double lower = 0.25;
+		double upper = 0.5;
+		Range expectedRange = new Range(1,8);
+		assertEquals("Expand: Did not return the expected output", expectedRange, Range.expand(r1, lower, upper));
+	}
+	
+	@Test
+	public void testExpandNull() {
+		try {
+			Range r1 = null;
+			double lower = 0.25;
+			double upper = 0.5;
+			Range.expand(r1, lower, upper);
+			fail("No exception thrown. The expected outcome was: a thrown exception of type: IllegalArgumentException");
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(InvalidParameterException.class));
+		}
+	}
+	
+	//getLength Tests
+	@Test
+	public void testGetLength() {
+		Range r1 = new Range(2,6);
+		double expectedValue = 4;
+		assertEquals("GetLength: Did not return the expected output", expectedValue, r1.getLength(), 0.000000001d);
+
+	}
+	
+	//shift Tests
+	@Test
+	public void testShift() {
+		Range r1 = new Range(2,6);
+		double value = 1;
+		Range expectedRange = new Range(3,7);
+		assertEquals("Shift: Did not return the expected output", expectedRange, Range.shift(r1, value));
+
+	}
+
+	
 	//getCentralValue Tests
 	@Test //Example
 	public void testCentralValueShouldBeZero() {

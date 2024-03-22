@@ -148,7 +148,8 @@ public class DataUtilitiesTest {
 	}
 
 
-	//calculateColumnTotal Tests	@Test
+	//calculateColumnTotal Tests
+	@Test
 	public void testNullDataColumnTotal() {
 		try {
 			DataUtilities.calculateColumnTotal(null, 0);
