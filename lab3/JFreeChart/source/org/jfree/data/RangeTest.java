@@ -27,6 +27,19 @@ public class RangeTest {
 	public void tearDown() throws Exception {
 	}
 
+	
+	//Range Test
+	@Test
+	public void testRangeBadValues() {
+		try {
+			Range r1 = new Range(10,2);
+			fail("No exception thrown. The expected outcome was: a thrown exception of type: IllegalArgumentException");
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(IllegalArgumentException.class));
+		}	}
+	
 	//combine Tests
 	@Test
 	public void testCombine() {
@@ -65,7 +78,7 @@ public class RangeTest {
 	@Test
 	public void testConstrainLower() {
 		Range r1 = new Range(2,3);
-		double value = 1;
+		double value = 0;
 		double expectedValue = 2;
 		assertEquals("Constrain: Did not return the expected output", expectedValue, r1.constrain(value), 0.000000001d);
 	}
@@ -78,6 +91,21 @@ public class RangeTest {
 		assertEquals("Constrain: Did not return the expected output", expectedValue, r1.constrain(value), 0.000000001d);
 	}
 	
+	@Test
+	public void testConstrainContainsSameAsLower() {
+		Range r1 = new Range(2,4);
+		double value = 2;
+		double expectedValue = 2;
+		assertEquals("Constrain: Did not return the expected output", expectedValue, r1.constrain(value), 0.000000001d);
+	}
+	
+	@Test
+	public void testConstrainEquals() {
+		Range r1 = new Range(3,4);
+		double value = 4;
+		double expectedValue = 4;
+		assertEquals("Constrain: Did not return the expected output", expectedValue, r1.constrain(value), 0.000000001d);
+	}
 	
 	//contains Tests
 	@Test
@@ -166,7 +194,91 @@ public class RangeTest {
 		assertEquals("Shift: Did not return the expected output", expectedRange, Range.shift(r1, value));
 
 	}
+	
+	@Test
+	public void testShiftNegativeValue() {
+		Range r1 = new Range(2,6);
+		double value = -2;
+		Range expectedRange = new Range(0,4);
+		assertEquals("Shift: Did not return the expected output", expectedRange, Range.shift(r1, value, false));
 
+	}
+	
+	@Test
+	public void testShiftZeroValue() {
+		Range r1 = new Range(2,6);
+		double value = 0;
+		Range expectedRange = new Range(2,6);
+		assertEquals("Shift: Did not return the expected output", expectedRange, Range.shift(r1, value, false));
+
+	}
+	
+	@Test
+	public void testShiftNull() {
+		try {
+			Range r1 = null;
+			double value = 1;
+			Range.shift(r1, value);
+			fail("No exception thrown. The expected outcome was: a thrown exception of type: IllegalArgumentException");
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(InvalidParameterException.class));
+		}
+	}
+	
+	//shift with zero crossing tests
+	@Test
+	public void testShiftWithZero() {
+		Range r1 = new Range(2,6);
+		double value = 1;
+		Range expectedRange = new Range(3,7);
+		assertEquals("Shift: Did not return the expected output", expectedRange, Range.shift(r1, value, true));
+
+	}
+	
+	@Test
+	public void testShiftWithZeroNegative() {
+		Range r1 = new Range(-2,6);
+		double value = 1;
+		Range expectedRange = new Range(-1,7);
+		assertEquals("Shift: Did not return the expected output", expectedRange, Range.shift(r1, value, true));
+
+	}
+	
+	@Test
+	public void testShiftWithZeroNegativeValue() {
+		Range r1 = new Range(-2,6);
+		double value = -1;
+		Range expectedRange = new Range(-3,5);
+		assertEquals("Shift: Did not return the expected output", expectedRange, Range.shift(r1, value, true));
+
+	}
+	
+	@Test
+	public void testShiftWithZeroNull() {
+		try {
+			Range r1 = null;
+			double value = 1;
+			Range.shift(r1, value, true);
+			fail("No exception thrown. The expected outcome was: a thrown exception of type: IllegalArgumentException");
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(InvalidParameterException.class));
+		}
+	}
+
+	
+	//hashcode Tests
+	@Test 
+	public void testHashCode() {
+		Range r1 = new Range(2,6);
+		int expected = 2;
+		assertEquals("HashCode: Did not return the expected output", expected, r1.hashCode());
+
+	}
+	
 	
 	//getCentralValue Tests
 	@Test //Example
