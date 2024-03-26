@@ -106,22 +106,22 @@ public class DataUtilitiesTest {
 		assertEquals(1.0,(double) object_under_test.getValue(2), .000000001d);
 	}
 	
-//	@Test
-//	public void testGetCumulativePercentagesWithNull() {
-//		try {
-//			DefaultKeyedValues keyValues = new DefaultKeyedValues();
-//			keyValues.addValue((Comparable) 0.0, null);
-//			keyValues.addValue((Comparable) 1.0,  11.0);
-//			keyValues.addValue((Comparable) 2.0, 3.0);
-//			KeyedValues object_under_test = DataUtilities.getCumulativePercentages((KeyedValues)keyValues);
-//			
-//			assertEquals(1.0, (double) object_under_test.getValue(2), .000000001d);
-//		}
-//		catch (Exception e) {
-//			assertTrue("Incorrect exception type thrown",
-//				e.getClass().equals(UnknownKeyException.class));
-//		}
-//	}
+	@Test
+	public void testGetCumulativePercentagesWithNull() {
+		try {
+			DefaultKeyedValues keyValues = new DefaultKeyedValues();
+			keyValues.addValue((Comparable) 0.0, null);
+			keyValues.addValue((Comparable) 1.0,  11.0);
+			keyValues.addValue((Comparable) 2.0, 3.0);
+			KeyedValues object_under_test = DataUtilities.getCumulativePercentages((KeyedValues)keyValues);
+			
+			assertEquals(1.0, (double) object_under_test.getValue(2), .000000001d);
+		}
+		catch (Exception e) {
+			assertTrue("Incorrect exception type thrown",
+				e.getClass().equals(UnknownKeyException.class));
+		}
+	}
 	
 	@Test
 	public void testGetCumulativePercentagesNullKeyValues() {
@@ -149,6 +149,17 @@ public class DataUtilitiesTest {
 
 
 	//calculateColumnTotal Tests
+	
+	@Test
+	public void testDataColumnTotalWithNullValue() {
+		DefaultKeyedValues2D testValues = new DefaultKeyedValues2D();
+		values2D = testValues;
+		testValues.addValue(null,6.0, 0.0);
+		testValues.addValue(5.0, 3.0, 0.0);
+		assertEquals("calculateColumnTotal: Did not Return the expected result", 5.0, DataUtilities.calculateColumnTotal(values2D, 0), 0.0000001d );
+	
+	}
+	
 	@Test
 	public void testNullDataColumnTotal() {
 		try {
