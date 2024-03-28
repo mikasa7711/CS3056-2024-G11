@@ -204,7 +204,7 @@ public strictfp class Range implements Serializable {
                 return range2;
             }
             else {
-                double l = Math.min(range1.getLowerBound(), 
+                double l = Math.min(range1.getUpperBound(), 
                         range2.getLowerBound());
                 double u = Math.max(range1.getUpperBound(), 
                         range2.getUpperBound());
